@@ -53,11 +53,14 @@ fr() {
     return 1
   fi
 
-if $apply; then
-    find "$directory" -type f -exec sed -i "s|$find_pattern|$replace_pattern|g" {} \;
+  local replace_pattern="${replace_pattern//@/\\@}"
+  local expression="s~$find_pattern~$replace_pattern~g"
+
+  if $apply; then
+    find "$directory" -type f -exec perl -pi -e "$expression" {} +
   else
     find "$directory" -type f | while read -r file; do
-      diff -u "$file" <(sed "s|$find_pattern|$replace_pattern|g" "$file")
+      diff -u "$file" <(perl -pe "$expression" "$file")
     done
   fi
 }

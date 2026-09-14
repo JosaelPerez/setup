@@ -53,7 +53,9 @@ fr() {
     return 1
   fi
 
+  local find_pattern="${find_pattern//@/\\@}"
   local replace_pattern="${replace_pattern//@/\\@}"
+
   local expression="s~$find_pattern~$replace_pattern~g"
 
   if $apply; then
